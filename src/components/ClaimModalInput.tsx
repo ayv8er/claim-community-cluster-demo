@@ -27,7 +27,7 @@ export default function ClaimModalInput({
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center gap-2 bg-white/5 rounded-lg px-3 md:px-4 py-2">
-        <span className="text-white/90 text-base md:text-lg font-bold select-none">notwrjo/</span>
+        <span className="text-white/90 text-base md:text-lg font-bold select-none">cypherpunks/</span>
         <input
           type="text"
           value={claimName}

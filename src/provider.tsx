@@ -2,8 +2,8 @@
 
 import { type ReactNode, useState, useEffect, useCallback } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { WagmiProvider, createConfig } from "wagmi";
 import { coinbaseWallet, walletConnect, metaMask } from "wagmi/connectors";
+import { WagmiProvider, createConfig } from "wagmi";
 import { mainnet } from "wagmi/chains";
 import { http } from "viem";
 
@@ -52,7 +52,7 @@ export default function Provider({ children }: Props) {
         connectors.push(
           metaMask({
             dappMetadata: {
-              name: "Notwrjo Community",
+              name: "Cypherpunks Community",
               url: window.location.origin,
               iconUrl: `${window.location.origin}/notwrjo.png`
             },
@@ -62,7 +62,7 @@ export default function Provider({ children }: Props) {
 
       connectors.push(
         coinbaseWallet({
-          appName: "Notwrjo Community",
+          appName: "Cypherpunks Community",
           appLogoUrl: `${window.location.origin}/notwrjo.png`,
           preference: {
             options: "eoaOnly"
@@ -75,8 +75,8 @@ export default function Provider({ children }: Props) {
           walletConnect({
             projectId: WALLET_CONNECT_PROJECT_ID,
             metadata: {
-              name: "Notwrjo Community",
-              description: "Notwrjo Community",
+              name: "Cypherpunks Community",
+              description: "Cypherpunks Community",
               url: window.location.origin,
               icons: [`${window.location.origin}/notwrjo.png`]
             }
