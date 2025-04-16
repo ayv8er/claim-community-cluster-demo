@@ -15,20 +15,10 @@ export default function Home() {
 
   const fetchClusterName = useCallback(async () => {
     try {
-      const response = await fetch(`https://api.clusters.xyz/v1/names/address/${address}`);
+      const response = await fetch(`https://api.clusters.xyz/v1/names/address/${address}?testnet=true`);
       const data = await response.json();
-      if (data.clusterName && data.walletName) {
-        setClusterName(data.clusterName + '/' + data.walletName);
-      }
-      if (data.clusterName && !data.walletName) {
-        setClusterName(data.clusterName + '/');
-      }
-      if (!data.clusterName && data.walletName) {
-        setClusterName('/' + data.walletName);
-      }
-      if (!data.clusterName && !data.walletName) {
-        setClusterName(null);
-      }
+      if (!data.clusterName) return;
+      setClusterName(data.clusterName);
     } catch (error) {
       console.error('Error fetching cluster name:', error);
     }
@@ -46,6 +36,7 @@ export default function Home() {
         isWalletConnectModalOpen={isWalletConnectModalOpen} 
         setIsWalletConnectModalOpen={setIsWalletConnectModalOpen}
         clusterName={clusterName || 'Unnamed'}
+        setClusterName={setClusterName}
       />
         <main className="h-[90vh] flex flex-col items-center justify-center">
           { clusterName ? 
@@ -54,7 +45,8 @@ export default function Home() {
               alt="logo" 
               width={420} 
               height={420} 
-              className="rounded-full select-none w-3/4 md:w-auto max-w-[420px]"
+              className="rounded-full select-none w-3/4 md:w-auto max-w-[420px] hover:cursor-pointer transition-transform hover:scale-105"
+              onClick={() => window.open(`https://testnet.clusters.xyz/cypherpunks`, '_blank')}
             />
           :
             <ClaimModal 

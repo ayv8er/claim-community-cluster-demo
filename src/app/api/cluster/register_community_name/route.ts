@@ -1,23 +1,20 @@
 export async function POST(request: Request) {
   const { address, name } = await request.json();
-
   try {
-    const response = await fetch(`https://api.clusters.xyz/v1/clusters/wallets`, {
+    const response = await fetch(`https://api.clusters.xyz/v1/names/community/cypherpunks/register?testnet=true`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "X-API-Key": process.env.NEXT_PUBLIC_CLUSTERS_API_KEY || "",
-        "Authorization": `Bearer ${process.env.NEXT_PUBLIC_CLUSTER_COMMUNITY_AUTH_KEY}`
+        "Authorization": `Bearer ${process.env.NEXT_PUBLIC_CYPHERPUNKS_COMMUNITY_CLUSTER_AUTH_KEY}`
       },
-      body: JSON.stringify([
-        {
-          "address": address,
-          "name": name,
-          "isPrivate": false
-        }
-      ])
+      body: JSON.stringify({
+        name,
+        walletAddress: address
+      })
     })
     const data = await response.json();
+    console.log(data);
     if (response.ok) {
       return new Response(JSON.stringify({ ...data, success: true }), { status: 200 });
     } else {

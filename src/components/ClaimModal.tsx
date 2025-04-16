@@ -2,24 +2,9 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useAccount } from "wagmi";
+import useDebounce from "@/hooks/useDebounce";
 import ClaimModalButton from "./ClaimModalButton";
 import ClaimModalInput from "./ClaimModalInput";
-
-function useDebounce<T>(value: T, delay: number): T {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value);
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [value, delay]);
-
-  return debouncedValue;
-}
 
 export default function ClaimModal({ 
   setClusterName, 
@@ -44,16 +29,9 @@ export default function ClaimModal({
 
     setIsChecking(true);
     try {
-      const response = await fetch('https://api.clusters.xyz/v1/names', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify([{ name: `notwrjo/${name}` }])
-      });
+      const response = await fetch(`https://api.clusters.xyz/v1/names/community/cypherpunks/check/${name}?testnet=true`);
       const data = await response.json();
-
-      if (data[0].address === null) {
+      if (data.isAvailable) {
         setIsAvailable(true);
       } else {
         setIsAvailable(false);
@@ -73,7 +51,7 @@ export default function ClaimModal({
   const handleClaimName = useCallback(async () => {
     setIsClaiming(true);
     try {
-      const response = await fetch('/api/cluster/add_wallet', {
+      const response = await fetch('/api/cluster/register_community_name', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -82,7 +60,7 @@ export default function ClaimModal({
       });
       const data = await response.json();
       if (data.success) {
-        setClusterName(`notwrjo/${claimName}`);
+        setClusterName(`cypherpunks/${claimName}`);
         setClaimName("");
       } else {
         console.error('Error claiming name:', data);
