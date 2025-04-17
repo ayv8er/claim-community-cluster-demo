@@ -2,8 +2,7 @@
 
 A Next.js application that demonstrates a custom build of a Community Cluster claim flow on Ethereum Sepolia.
 
-Demo App URL: https://claim-community-cluster-demo.vercel.app/
-
+Demo App URL: 
 Clusters API v1 Documentation URL: https://docs.clusters.xyz/getting-started/api
 
 ## User Flow to Claim Community Name
@@ -33,9 +32,10 @@ Clusters API v1 Documentation URL: https://docs.clusters.xyz/getting-started/api
     - Register via [API v1](https://docs.clusters.xyz/getting-started/api/v1/registration)
 
 2. **Get Authentication Key with Verified Wallet**
-    - Only the verified wallet of the Community Cluster (usually the wallet who registered it) can register new names.
-    - Get authentication key to use when registering wallets in your custom name claim flow.
+    - Only the verified wallet of the Community Cluster (usually the wallet who registered it) can register new names
+    - Get authentication key to use when registering wallets in your custom name claim flow
     - [Authentication API spec](https://docs.clusters.xyz/getting-started/api/v1/authentication)
+    - Use `useAuthKey` hook to get `authKey` of connected wallet
 
 ### Clusters API Endpoints Used
 
@@ -67,6 +67,9 @@ curl -X POST https://api.clusters.xyz/v1/names/community/${communityName}/regist
     'owner': 'string'
   }'
 ```
+
+4. **Authenticate Wallet and get Authentication Key**
+- 
 
 ## Environment Variables
 
