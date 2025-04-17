@@ -30,10 +30,8 @@ export default function Home() {
   }, [address, setClusterName]);
 
   useEffect(() => {
-    if (address) {
-      fetchClusterName();
-    }
-  }, [address, fetchClusterName]);
+    fetchClusterName();
+  }, [fetchClusterName]);
 
   if (isLoading) {
     return (
@@ -61,7 +59,7 @@ export default function Home() {
         setClusterName={setClusterName}
       />
         <main className="h-[90vh] flex flex-col items-center justify-center">
-          { clusterName && !isLoading ? 
+          { clusterName ? 
             <Image 
               src="/notwrjo.png" 
               alt="logo" 

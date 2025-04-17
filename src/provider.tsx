@@ -4,7 +4,7 @@ import { type ReactNode, useState, useEffect, useCallback } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { coinbaseWallet, walletConnect, metaMask } from "wagmi/connectors";
 import { WagmiProvider, createConfig } from "wagmi";
-import { mainnet } from "wagmi/chains";
+import { sepolia } from "wagmi/chains";
 import { http } from "viem";
 
 function safeWindowCheck() {
@@ -37,10 +37,10 @@ export default function Provider({ children }: Props) {
   const createAppConfig = useCallback(() => {
     if (!safeWindowCheck()) {
       return createConfig({
-        chains: [mainnet],
+        chains: [sepolia],
         connectors: [],
         transports: {
-          [mainnet.id]: http(process.env.NEXT_PUBLIC_ETHEREUM_RPC_URL),
+          [sepolia.id]: http(process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL),
         },
       });
     }
@@ -87,20 +87,20 @@ export default function Provider({ children }: Props) {
       }
 
     return createConfig({
-      chains: [mainnet],
+      chains: [sepolia],
       connectors,
       transports: {
-        [mainnet.id]: http(process.env.NEXT_PUBLIC_ETHEREUM_RPC_URL),
+        [sepolia.id]: http(process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL),
       },
     });
   } catch (error) {
     console.error("Error creating wagmi config:", error);
     
     return createConfig({
-      chains: [mainnet],
+      chains: [sepolia],
       connectors: [],
       transports: {
-        [mainnet.id]: http(process.env.NEXT_PUBLIC_ETHEREUM_RPC_URL),
+        [sepolia.id]: http(process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL),
       },
     });
   }
