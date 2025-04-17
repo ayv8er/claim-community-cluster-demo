@@ -11,8 +11,8 @@ export default function Header({
 }: {
   isWalletConnectModalOpen: boolean;
   setIsWalletConnectModalOpen: (isOpen: boolean) => void;
-  clusterName: string;
-  setClusterName: (clusterName: string) => void;
+  clusterName: string | null;
+  setClusterName: (clusterName: string | null) => void;
 }) {
   const [copied, setCopied] = useState(false);
   const { address, isConnected } = useAccount();
@@ -46,7 +46,7 @@ export default function Header({
   const handleDisconnect = useCallback(() => {
     try {
       setIsWalletConnectModalOpen(false);
-      setClusterName('');
+      setClusterName(null);
       disconnect();
     } catch (error) {
       console.error('Disconnection error:', error);
@@ -77,12 +77,13 @@ export default function Header({
         <div className="bg-white/5 backdrop-blur-md rounded-lg p-4 min-w-[280px] md:min-w-[360px]">
           {isConnected ? (
             <div className="flex items-center gap-3">
-              <div 
+              <button 
+                disabled={!clusterName}
                 onClick={() => window.open(`https://testnet.clusters.xyz/${clusterName}`, '_blank')}
-                className="bg-white/10 backdrop-blur-md rounded-lg p-2 hover:bg-white/20 cursor-pointer transition-colors select-none"
+                className={`bg-white/10 backdrop-blur-md rounded-lg p-2 hover:bg-white/20 transition-colors select-none ${clusterName ? 'cursor-pointer' : 'cursor-not-allowed'}`}
               >
-                {clusterName}
-              </div>
+                {clusterName ? clusterName : 'None'}
+              </button>
               <button 
                 onClick={copyAddress}
                 className="bg-white/10 backdrop-blur-md rounded-lg p-2 hover:bg-white/20 cursor-pointer transition-colors select-none"

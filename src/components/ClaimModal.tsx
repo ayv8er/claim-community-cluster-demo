@@ -29,7 +29,7 @@ export default function ClaimModal({
 
     setIsChecking(true);
     try {
-      const response = await fetch(`https://api.clusters.xyz/v1/names/community/cypherpunks/check/${name}?testnet=true`);
+      const response = await fetch(`https://api.clusters.xyz/v1/names/community/${process.env.NEXT_PUBLIC_CLUSTERS_COMMUNITY_NAME}/check/${name}?testnet=true`);
       const data = await response.json();
       if (data.isAvailable) {
         setIsAvailable(true);

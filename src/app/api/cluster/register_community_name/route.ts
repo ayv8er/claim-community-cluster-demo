@@ -1,7 +1,7 @@
 export async function POST(request: Request) {
   const { address, name } = await request.json();
   try {
-    const response = await fetch(`https://api.clusters.xyz/v1/names/community/cypherpunks/register?testnet=true`, {
+    const response = await fetch(`https://api.clusters.xyz/v1/names/community/${process.env.NEXT_PUBLIC_CLUSTERS_COMMUNITY_NAME}/register?testnet=true`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
