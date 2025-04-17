@@ -2,7 +2,8 @@
 
 A Next.js application that demonstrates a custom build of a Community Cluster claim flow on Ethereum Sepolia.
 
-Demo App URL: 
+Demo App URL: https://claim-community-cluster-demo.vercel.app/
+
 Clusters API v1 Documentation URL: https://docs.clusters.xyz/getting-started/api
 
 ## User Flow to Claim Community Name
