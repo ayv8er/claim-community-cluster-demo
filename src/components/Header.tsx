@@ -1,31 +1,21 @@
 'use client'
 
-import { useEffect, useState, useCallback, useMemo } from 'react'
-import { Connector, useAccount, useConnect, useDisconnect } from 'wagmi'
+import { useEffect, useCallback } from 'react';
+import { useAccount, useDisconnect } from 'wagmi';
+import { useClusterNameQuery } from '../hooks/useClusterNameQuery';
+import WalletConnectorList from './WalletConnectorList';
+import WalletInfo from './WalletInfo';
 
 export default function Header({
   isWalletConnectModalOpen,
   setIsWalletConnectModalOpen,
-  clusterName,
-  setClusterName
 }: {
   isWalletConnectModalOpen: boolean;
   setIsWalletConnectModalOpen: (isOpen: boolean) => void;
-  clusterName: string | null;
-  setClusterName: (clusterName: string | null) => void;
 }) {
-  const [copied, setCopied] = useState(false);
+  const { data: clusterName } = useClusterNameQuery();
   const { address, isConnected } = useAccount();
-  const { connectors, connect } = useConnect();
   const { disconnect } = useDisconnect();
-
-  const copyAddress = useCallback(() => {
-    if (address) {
-      navigator.clipboard.writeText(address);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
-  }, [address]);
 
   useEffect(() => {
     if (isConnected) {
@@ -33,34 +23,17 @@ export default function Header({
     }
   }, [isConnected, setIsWalletConnectModalOpen]);
 
-  const allowedWallets = useMemo(() => ['Rabby Wallet', 'MetaMask', 'WalletConnect', 'Coinbase Wallet'], []);
-
-  const handleConnect = useCallback((connector: Connector) => {
-    try {
-      connect({ connector });
-    } catch (error) {
-      console.error('Connection error:', error);
-    }
-  }, [connect]);
-
   const handleDisconnect = useCallback(() => {
     try {
       setIsWalletConnectModalOpen(false);
-      setClusterName(null);
       disconnect();
     } catch (error) {
       console.error('Disconnection error:', error);
     }
-  }, [disconnect, setIsWalletConnectModalOpen, setClusterName]);
-
-  const filteredConnectors = useMemo(() => 
-    connectors.filter(connector => allowedWallets.includes(connector.name)),
-    [connectors, allowedWallets, handleConnect]
-  );
+  }, [disconnect, setIsWalletConnectModalOpen]);
 
   return (
     <div className="flex flex-col items-center relative">
-
       <div className="relative flex items-center">
         <button 
           disabled={isConnected}
@@ -76,39 +49,13 @@ export default function Header({
       }`}>
         <div className="bg-white/5 backdrop-blur-md rounded-lg p-4 min-w-[280px] md:min-w-[360px]">
           {isConnected ? (
-            <div className="flex items-center gap-3">
-              <button 
-                disabled={!clusterName}
-                onClick={() => window.open(`https://testnet.clusters.xyz/${clusterName}`, '_blank')}
-                className={`bg-white/10 backdrop-blur-md rounded-lg p-2 hover:bg-white/20 transition-colors select-none ${clusterName ? 'cursor-pointer' : 'cursor-not-allowed'}`}
-              >
-                {clusterName ? clusterName : 'None'}
-              </button>
-              <button 
-                onClick={copyAddress}
-                className="bg-white/10 backdrop-blur-md rounded-lg p-2 hover:bg-white/20 cursor-pointer transition-colors select-none"
-              >
-                {copied ? 'Copied!' : `${address?.slice(0, 6)}...${address?.slice(-4)}`}
-              </button>
-              <button 
-                onClick={handleDisconnect}
-                className="bg-white/10 backdrop-blur-md rounded-lg p-2 hover:bg-white/20 cursor-pointer transition-colors select-none"
-              >
-                Disconnect
-              </button>
-            </div>
+            <WalletInfo 
+              address={address}
+              clusterName={clusterName}
+              onDisconnect={handleDisconnect}
+            />
           ) : (
-            <div className="flex flex-col lg:flex-row gap-3 w-full lg:w-auto">
-              {filteredConnectors.map((connector: Connector) => (
-                <button 
-                  key={connector.uid} 
-                    onClick={() => handleConnect(connector)}
-                    className="bg-white/10 backdrop-blur-md rounded-lg p-2 hover:bg-white/20 cursor-pointer transition-colors w-full md:w-auto md:min-w-[160px] lg:min-w-0 whitespace-nowrap"
-                  >
-                    {connector.name}
-                  </button>
-                ))}
-            </div>
+            <WalletConnectorList onConnect={() => setIsWalletConnectModalOpen(false)} />
           )}
         </div>
       </div>

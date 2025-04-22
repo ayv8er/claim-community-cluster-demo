@@ -65,13 +65,13 @@ curl -X POST https://api.clusters.xyz/v1/auth/token
 3. **Fetch Community Name of Connected Wallet**
 - [Get Name API spec](https://docs.clusters.xyz/getting-started/api/v1/address-cluster-name#get-name)
 ```bash
-curl -X GET https://api.clusters.xyz/v1/names/address/${walletAddress}?testnet=true
+curl -X GET https://api.clusters.xyz/v1/names/address/${walletAddress}
 ```
 
 4. **Check Availability of Community Name**
 - [Check Community Names Availability API spec](https://docs.clusters.xyz/getting-started/api/v1/registration/communities#check-availability)
 ```bash
-curl -X GET https://api.clusters.xyz/v1/names/community/${communityName}/check/${nameToClaim}?testnet=true
+curl -X GET https://api.clusters.xyz/v1/names/community/${communityName}/check/${nameToClaim}
 ```
 
 5. **Claim Community Name**
@@ -81,7 +81,7 @@ curl -X GET https://api.clusters.xyz/v1/names/community/${communityName}/check/$
 ```bash
 # API route: /api/cluster/register_community_name/route.ts
 
-curl -X POST https://api.clusters.xyz/v1/names/community/${communityName}/register?testnet=true
+curl -X POST https://api.clusters.xyz/v1/names/community/${communityName}/register
   -H 'Content-Type: application/json' 
   -H 'X-API-Key: `${process.env.NEXT_PUBLIC_CLUSTERS_API_KEY}`'
   -H 'Authorization: `Bearer ${process.env.NEXT_PUBLIC_CYPHERPUNKS_COMMUNITY_CLUSTER_AUTH_KEY}`' \
@@ -93,14 +93,37 @@ curl -X POST https://api.clusters.xyz/v1/names/community/${communityName}/regist
 
 ## Environment Variables
 
-Required environment variables:
+This project uses a robust environment variable management system that ensures proper configuration and provides helpful error messages when required variables are missing.
+
+### Required Environment Variables
+
+Create a `.env.local` file in the root directory with the following variables:
+
 ```bash
-NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID= # WalletConnect Project ID
-NEXT_PUBLIC_ETHEREUM_RPC_URL= # Ethereum Node RPC URL
-NEXT_PUBLIC_CLUSTERS_API_KEY= # Clusters API Key
-NEXT_PUBLIC_CLUSTERS_COMMUNITY_NAME= # Community Clusters Name
-NEXT_PUBLIC_CYPHERPUNKS_COMMUNITY_CLUSTER_AUTH_KEY= # Verified Wallet authKey
+# Required public environment variables for client-side
+NEXT_PUBLIC_CLUSTERS_TESTNET_BASE_URL=https://api.clusters.xyz
+NEXT_PUBLIC_CLUSTERS_COMMUNITY_NAME=cypherpunks
+NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=your_wallet_connect_project_id
+NEXT_PUBLIC_SEPOLIA_RPC_URL=https://sepolia.infura.io/v3/your_infura_key
+
+# Required server-side environment variables
+CLUSTERS_API_KEY=your_clusters_api_key
 ```
+
+### Environment Variable Management
+
+The project includes a comprehensive environment variable validation system that:
+
+1. **Validates Required Variables**: Ensures all required environment variables are present
+2. **Provides Type Safety**: TypeScript definitions for all environment variables
+3. **Centralizes Configuration**: Uses a Config Context for component access to values
+4. **Shows Helpful Errors**: Displays clear error UI when required variables are missing
+5. **Handles Graceful Fallbacks**: Uses error boundaries to prevent the app from crashing
+
+For developers: If you need to add new environment variables, update the following files:
+- `src/lib/env.ts` - Add your variable to the envConfig object
+- `src/types/env.d.ts` - Add TypeScript type definition
+- `src/contexts/ConfigContext.tsx` - Expose the variable through the context if needed
 
 ## Getting Started
 
@@ -146,13 +169,27 @@ src/
 │           └── register_community_name/
 │               └── route.ts
 ├── components/
+│   ├── BackgroundLayout.tsx
+│   ├── ClientErrorBoundary.tsx
 │   ├── ClaimModal.tsx
 │   ├── ClaimModalInput.tsx
 │   ├── ClaimModalButton.tsx
 │   ├── Header.tsx
+│   ├── WalletInfo.tsx
+│   ├── WalletConnectorList.tsx
 │   └── Footer.tsx
+├── contexts/
+│   └── ConfigContext.tsx
 ├── hooks/
-│   └── useDebounce.ts
-│   └── useAuthKey.ts
+│   ├── useDebounce.ts
+│   ├── useAuthKey.ts
+│   ├── useAddressCopy.ts
+│   ├── useClusterNameQuery.ts
+│   ├── useClusterNameAvailability.ts
+│   └── useClusterNameClaim.ts
+├── lib/
+│   └── env.ts
+├── types/
+│   └── env.d.ts
 └── provider.tsx
 ```

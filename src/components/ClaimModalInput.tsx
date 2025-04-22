@@ -1,38 +1,39 @@
 import { useCallback } from "react";
 
 export default function ClaimModalInput({
-  claimName,
-  setClaimName,
+  desiredName,
+  setDesiredName,
   isChecking,
   isAvailable
 }: {
-  claimName: string;
-  setClaimName: (name: string) => void;
+  desiredName: string;
+  setDesiredName: (name: string) => void;
   isChecking: boolean;
   isAvailable: boolean | null;
 }) {
+  const clusterCommunityName = process.env.NEXT_PUBLIC_CLUSTERS_COMMUNITY_NAME;
 
   const getAvailabilityMessage = useCallback(() => {
-    if (!claimName) return null;
+    if (!desiredName) return null;
     if (isChecking) return "Checking availability...";
     if (isAvailable === null) return null;
     return isAvailable ? "✓ Name is available" : "✗ Name is already taken";
-  }, [claimName, isChecking, isAvailable]);
+  }, [desiredName, isChecking, isAvailable]);
 
   const getAvailabilityColor = useCallback(() => {
-    if (!claimName || isChecking || isAvailable === null) return "text-white/50";
+    if (!desiredName || isChecking || isAvailable === null) return "text-white/50";
     return isAvailable ? "text-green-400" : "text-red-400";
-  }, [claimName, isChecking, isAvailable]);
+  }, [desiredName, isChecking, isAvailable]);
 
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center gap-2 bg-white/5 rounded-lg px-3 md:px-4 py-2">
-        <span className="text-white/90 text-base md:text-lg font-bold select-none">cypherpunks/</span>
+        <span className="text-white/90 text-base md:text-lg font-bold select-none">{clusterCommunityName}/</span>
         <input
           type="text"
-          value={claimName}
+          value={desiredName}
           placeholder="your name"
-          onChange={(e) => setClaimName(e.target.value)}
+          onChange={(e) => setDesiredName(e.target.value)}
           className="bg-transparent border-none focus:outline-none text-white placeholder:text-white/50 w-full"
         />
       </div>

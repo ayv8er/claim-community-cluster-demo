@@ -1,76 +1,25 @@
 'use client'
 
-import { useEffect, useState, useCallback } from "react";
-import { useAccount } from "wagmi";
-import useDebounce from "@/hooks/useDebounce";
+import { useCallback } from "react";
+import { useClusterNameAvailability } from "../hooks/useClusterNameAvailability";
+import { useClusterNameClaim } from "../hooks/useClusterNameClaim";
 import ClaimModalButton from "./ClaimModalButton";
 import ClaimModalInput from "./ClaimModalInput";
 
 export default function ClaimModal({ 
-  setClusterName, 
   setIsWalletConnectModalOpen 
 }: { 
-  setClusterName: (name: string) => void, 
   setIsWalletConnectModalOpen: (open: boolean) => void 
 }) {
-  const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
-  const [isClaiming, setIsClaiming] = useState(false);
-  const [isChecking, setIsChecking] = useState(false);
-  const [claimName, setClaimName] = useState("");
-
-  const debouncedClaimName = useDebounce(claimName, 500);
-  const { address } = useAccount();
-
-  const checkNameAvailability = useCallback(async (name: string) => {
-    if (!name) {
-      setIsAvailable(null);
-      return;
-    }
-
-    setIsChecking(true);
-    try {
-      const response = await fetch(`https://api.clusters.xyz/v1/names/community/${process.env.NEXT_PUBLIC_CLUSTERS_COMMUNITY_NAME}/check/${name}?testnet=true`);
-      const data = await response.json();
-      if (data.isAvailable) {
-        setIsAvailable(true);
-      } else {
-        setIsAvailable(false);
-      }
-    } catch (error) {
-      console.error('Error checking name availability:', error);
-      setIsAvailable(null);
-    } finally {
-      setIsChecking(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    checkNameAvailability(debouncedClaimName);
-  }, [debouncedClaimName, checkNameAvailability]);
+  const { desiredName, setDesiredName, isAvailable, isChecking } = useClusterNameAvailability();
+  const { claimName, isClaiming } = useClusterNameClaim();
 
   const handleClaimName = useCallback(async () => {
-    setIsClaiming(true);
-    try {
-      const response = await fetch('/api/cluster/register_community_name', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ address, name: claimName }),
-      });
-      const data = await response.json();
-      if (data.success) {
-        setClusterName(`cypherpunks/${claimName}`);
-        setClaimName("");
-      } else {
-        console.error('Error claiming name:', data);
-      }
-    } catch (error) {
-      console.error('Error claiming name:', error);
-    } finally {
-      setIsClaiming(false);
+    const success = await claimName(desiredName);
+    if (success) {
+      setDesiredName("");
     }
-  }, [address, claimName, setClusterName, setClaimName]);
+  }, [desiredName, claimName, setDesiredName]);
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -84,8 +33,8 @@ export default function ClaimModal({
         
         <div className="flex flex-col gap-3 md:gap-4">
           <ClaimModalInput 
-            claimName={claimName}
-            setClaimName={setClaimName}
+            desiredName={desiredName}
+            setDesiredName={setDesiredName}
             isChecking={isChecking}
             isAvailable={isAvailable}
           />
