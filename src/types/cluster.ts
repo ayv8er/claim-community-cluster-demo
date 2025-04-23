@@ -11,7 +11,7 @@ export interface ClusterNameAvailability {
 export interface ClusterNameRegistrationResponse {
   success: boolean;
   error?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface RegisterNameParams {
