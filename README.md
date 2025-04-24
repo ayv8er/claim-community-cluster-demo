@@ -113,13 +113,14 @@ NEXT_PUBLIC_CLUSTERS_API_BASE_URL=https://api.clusters.xyz
 NEXT_PUBLIC_CLUSTERS_COMMUNITY_NAME=cypherpunks
 
 # Optional public environment variables for client-side
-NEXT_PUBLIC_CLUSTERS_API_KEY=your_clusters_api_key
-NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=your_wallet_connect_project_id
-NEXT_PUBLIC_SEPOLIA_RPC_URL=https://sepolia.infura.io/v3/your_infura_key
+NEXT_PUBLIC_SITE_URL=
+NEXT_PUBLIC_CLUSTERS_API_KEY=
+NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=
+NEXT_PUBLIC_SEPOLIA_RPC_URL=
 
 # Required server-side environment variables (only accessible on the server)
 # Used to authenticate name registration calls for your specific community cluster
-COMMUNITY_CLUSTER_AUTH_KEY=your_community_cluster_auth_key
+COMMUNITY_CLUSTER_AUTH_KEY=
 ```
 
 ### Environment Variable Management

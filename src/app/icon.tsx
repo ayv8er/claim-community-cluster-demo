@@ -2,7 +2,14 @@ import { ImageResponse } from 'next/og'
 
 export const runtime = 'edge'
 
+const localPort = process.env.PORT || '3000';
+const localBaseUrl = `http://localhost:${localPort}`;
+
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || localBaseUrl;
+
 export default function Icon() {
+  const imageUrl = `${baseUrl}/notwrjo.png`;
+
   return new ImageResponse(
     (
       <div
@@ -16,7 +23,7 @@ export default function Icon() {
         }}
       >
         <img
-          src="http://localhost:3001/notwrjo.png"
+          src={imageUrl}
           alt="Notwrjo"
           style={{
             width: '100%',
@@ -31,4 +38,4 @@ export default function Icon() {
       height: 32,
     }
   )
-} 
+}
