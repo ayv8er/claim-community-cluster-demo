@@ -1,7 +1,13 @@
 export interface CommunityName {
-  // TODO: rename to communityName after new endpoint is deployed
-  clusterName: string | null;
-  address: string;
+  name: string;
+  owner: string;
+  totalWeiAmount: string;
+  createdAt: string;
+  updatedAt: string;
+  updatedBy: string;
+  isTestnet: boolean;
+  clusterId: string;
+  expiresAt: string | null;
 }
 
 export interface CommunityNameAvailability {

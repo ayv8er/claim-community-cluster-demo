@@ -99,9 +99,8 @@ export async function getAuthToken(params: {
   }
 }
 
-export async function fetchCommunityName(address: string): Promise<CommunityName> {
-  // TODO: replace with new endpoint
-  const response = await fetch(`${BASE_URL}/v1/names/address/${address}?testnet=true`);
+export async function fetchCommunityName(address: string): Promise<CommunityName[]> {
+  const response = await fetch(`${BASE_URL}/v1/names/owner/address/${address}?testnet=true`);
 
   if (!response.ok) { 
     throw new Error('Failed to get community name');

@@ -11,7 +11,7 @@ import Image from "next/image";
 
 export default function Home() {
   const [isWalletConnectModalOpen, setIsWalletConnectModalOpen] = useState(false);
-  const { data: clusterName, isLoading } = useCommunityNameQuery();
+  const { data: communityName, isLoading } = useCommunityNameQuery();
   const clustersCommunityName = process.env.NEXT_PUBLIC_CLUSTERS_COMMUNITY_NAME;
   const clustersTestnetWebUrl = siteConfig.baseUrls.testnet;
 
@@ -30,7 +30,7 @@ export default function Home() {
       <main className="h-[90vh] flex flex-col items-center justify-center">
         {isLoading ? (
           <div className="text-2xl font-bold">Loading...</div>
-        ) : clusterName ? (
+        ) : communityName ? (
           <Image 
             src="/notwrjo.png" 
             alt="logo" 
