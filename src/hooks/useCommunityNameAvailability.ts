@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { checkNameAvailability } from '../lib/api/clusters';
 import useDebounce from './useDebounce';
 
-export function useClusterNameAvailability(delay = 500) {
+export function useCommunityNameAvailability(delay = 500) {
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
   const [isChecking, setIsChecking] = useState(false);
   const [desiredName, setDesiredName] = useState("");

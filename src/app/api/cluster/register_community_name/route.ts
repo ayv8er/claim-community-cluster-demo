@@ -1,4 +1,4 @@
-import { clusterApiRegisterName } from '../../../../lib/server/clusters';
+import { clusterApiRegisterCommunityName } from '../../../../lib/server/clusters';
 
 export async function POST(request: Request) {
   const { address, name } = await request.json();
@@ -14,7 +14,7 @@ export async function POST(request: Request) {
       throw new Error('Your COMMUNITY_NAME is required in site config.');
     }
 
-    const result = await clusterApiRegisterName({
+    const result = await clusterApiRegisterCommunityName({
       name,
       walletAddress: address,
       communityName: communityName,
@@ -27,12 +27,12 @@ export async function POST(request: Request) {
     } else {
       return new Response(JSON.stringify(result), { 
         status: 400,
-        statusText: 'Failed to register name'
+        statusText: 'Failed to register community name'
       });
     }
   } catch (error) {
-    console.error("Error claiming cluster:", error);
-    const errorMessage = error instanceof Error ? error.message : "Error claiming cluster";
+    console.error("Error claiming community name:", error);
+    const errorMessage = error instanceof Error ? error.message : "Error claiming community name";
     return new Response(
       JSON.stringify({ 
         success: false, 

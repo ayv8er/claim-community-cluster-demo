@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback } from "react";
-import { useClusterNameQuery } from "../hooks/useClusterNameQuery";
+import { useCommunityNameQuery } from "../hooks/useCommunityNameQuery";
 import BackgroundLayout from "../components/BackgroundLayout";
 import ClaimModal from "../components/ClaimModal";
 import Header from "../components/Header";
@@ -11,7 +11,7 @@ import Image from "next/image";
 
 export default function Home() {
   const [isWalletConnectModalOpen, setIsWalletConnectModalOpen] = useState(false);
-  const { data: clusterName, isLoading } = useClusterNameQuery();
+  const { data: clusterName, isLoading } = useCommunityNameQuery();
   const clustersCommunityName = process.env.NEXT_PUBLIC_CLUSTERS_COMMUNITY_NAME;
   const clustersTestnetWebUrl = siteConfig.baseUrls.testnet;
 

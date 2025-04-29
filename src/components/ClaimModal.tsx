@@ -1,8 +1,8 @@
 'use client'
 
 import { useCallback } from "react";
-import { useClusterNameAvailability } from "../hooks/useClusterNameAvailability";
-import { useClusterNameClaim } from "../hooks/useClusterNameClaim";
+import { useCommunityNameAvailability } from "../hooks/useCommunityNameAvailability";
+import { useCommunityNameClaim } from "../hooks/useCommunityNameClaim";
 import ClaimModalButton from "./ClaimModalButton";
 import ClaimModalInput from "./ClaimModalInput";
 
@@ -11,8 +11,8 @@ export default function ClaimModal({
 }: { 
   setIsWalletConnectModalOpen: (open: boolean) => void 
 }) {
-  const { desiredName, setDesiredName, isAvailable, isChecking } = useClusterNameAvailability();
-  const { claimName, isClaiming } = useClusterNameClaim();
+  const { desiredName, setDesiredName, isAvailable, isChecking } = useCommunityNameAvailability();
+  const { claimName, isClaiming } = useCommunityNameClaim();
 
   const handleClaimName = useCallback(async () => {
     const success = await claimName(desiredName);

@@ -1,20 +1,21 @@
-export interface ClusterName {
+export interface CommunityName {
+  // TODO: rename to communityName after new endpoint is deployed
   clusterName: string | null;
   address: string;
 }
 
-export interface ClusterNameAvailability {
+export interface CommunityNameAvailability {
   isAvailable: boolean;
   name: string;
 }
 
-export interface ClusterNameRegistrationResponse {
+export interface CommunityNameRegistrationResponse {
   success: boolean;
   error?: string;
   [key: string]: unknown;
 }
 
-export interface RegisterNameParams {
+export interface RegisterCommunityNameParams {
   address: string;
   name: string;
 }

@@ -1,12 +1,12 @@
-import { ClusterNameRegistrationResponse } from '../../types/cluster';
+import { CommunityNameRegistrationResponse } from '../../types/cluster';
 
-export async function clusterApiRegisterName(params: {
+export async function clusterApiRegisterCommunityName(params: {
   name: string;
   walletAddress: string;
   communityName: string;
   apiKey: string;
   authKey: string;
-}): Promise<ClusterNameRegistrationResponse> {
+}): Promise<CommunityNameRegistrationResponse> {
   const { name, walletAddress, communityName, apiKey, authKey } = params;
   
   try {
@@ -27,6 +27,7 @@ export async function clusterApiRegisterName(params: {
     );
     
     const data = await response.json();
+    
     return { ...data, success: response.ok };
   } catch (error) {
     return { 

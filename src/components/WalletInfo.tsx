@@ -3,22 +3,22 @@ import { siteConfig } from '../config/site';
 
 type WalletInfoProps = {
   address?: string;
-  clusterName?: string | null;
+  communityName?: string | null;
   onDisconnect: () => void;
 };
 
-export default function WalletInfo({ address, clusterName, onDisconnect }: WalletInfoProps) {
+export default function WalletInfo({ address, communityName, onDisconnect }: WalletInfoProps) {
   const { copied, copyAddress } = useAddressCopy(address);
   const clustersTestnetWebUrl = siteConfig.baseUrls.testnet;
 
   return (
     <div className="flex items-center gap-3 justify-between">
       <button 
-        disabled={!clusterName}
-        onClick={() => window.open(`${clustersTestnetWebUrl}/${clusterName}`, '_blank')}
-        className={`bg-white/10 backdrop-blur-md rounded-lg p-2 hover:bg-white/20 transition-colors select-none ${clusterName ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+        disabled={!communityName}
+        onClick={() => window.open(`${clustersTestnetWebUrl}/${communityName}`, '_blank')}
+        className={`bg-white/10 backdrop-blur-md rounded-lg p-2 hover:bg-white/20 transition-colors select-none ${communityName ? 'cursor-pointer' : 'cursor-not-allowed'}`}
       >
-        {clusterName ? clusterName : 'None'}
+        {communityName ? communityName : 'None'}
       </button>
       <button 
         onClick={copyAddress}

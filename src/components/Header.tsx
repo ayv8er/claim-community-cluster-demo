@@ -2,7 +2,7 @@
 
 import { useEffect, useCallback } from 'react';
 import { useAccount, useDisconnect } from 'wagmi';
-import { useClusterNameQuery } from '../hooks/useClusterNameQuery';
+import { useCommunityNameQuery } from '../hooks/useCommunityNameQuery';
 import WalletConnectorList from './WalletConnectorList';
 import WalletInfo from './WalletInfo';
 
@@ -13,7 +13,7 @@ export default function Header({
   isWalletConnectModalOpen: boolean;
   setIsWalletConnectModalOpen: (isOpen: boolean) => void;
 }) {
-  const { data: clusterName } = useClusterNameQuery();
+  const { data: communityName } = useCommunityNameQuery();
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
 
@@ -51,7 +51,7 @@ export default function Header({
           {isConnected ? (
             <WalletInfo 
               address={address}
-              clusterName={clusterName}
+              communityName={communityName}
               onDisconnect={handleDisconnect}
             />
           ) : (

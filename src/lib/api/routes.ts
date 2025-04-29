@@ -1,7 +1,7 @@
-import { RegisterNameParams, ClusterNameRegistrationResponse } from '../../types/cluster';
+import { RegisterCommunityNameParams, CommunityNameRegistrationResponse } from '../../types/cluster';
 import { ClustersApiError } from './clusters';
 
-export async function apiRouteRegisterName(params: RegisterNameParams): Promise<ClusterNameRegistrationResponse> {
+export async function apiRouteRegisterCommunityName(params: RegisterCommunityNameParams): Promise<CommunityNameRegistrationResponse> {
   try {
     if (!params.address) {
       throw new ClustersApiError('Missing required address parameter', 400, params);

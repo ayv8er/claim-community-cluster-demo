@@ -1,4 +1,4 @@
-import { ClusterName, ClusterNameAvailability } from '../../types/cluster';
+import { CommunityName, CommunityNameAvailability, CommunityNameRegistrationResponse } from '../../types/cluster';
 
 const BASE_URL = process.env.NEXT_PUBLIC_CLUSTERS_API_BASE_URL || '';
 const API_KEY = process.env.NEXT_PUBLIC_CLUSTERS_API_KEY || '';
@@ -99,17 +99,18 @@ export async function getAuthToken(params: {
   }
 }
 
-export async function fetchClusterName(address: string): Promise<ClusterName> {
+export async function fetchCommunityName(address: string): Promise<CommunityName> {
+  // TODO: replace with new endpoint
   const response = await fetch(`${BASE_URL}/v1/names/address/${address}?testnet=true`);
 
   if (!response.ok) { 
-    throw new Error('Failed to get cluster name');
+    throw new Error('Failed to get community name');
   }
 
   return response.json();
 }
 
-export async function checkNameAvailability(name: string): Promise<ClusterNameAvailability> {
+export async function checkNameAvailability(name: string): Promise<CommunityNameAvailability> {
   try {
     if (!name) {
       throw new ClustersApiError(
@@ -154,7 +155,7 @@ export async function checkNameAvailability(name: string): Promise<ClusterNameAv
 export async function registerCommunityName(params: {
   address: string;
   name: string;
-}): Promise<{ success: boolean }> {
+}): Promise<CommunityNameRegistrationResponse> {
   try {
     if (!params.address) {
       throw new ClustersApiError(
@@ -172,35 +173,35 @@ export async function registerCommunityName(params: {
       method: 'POST',
       headers: {
       'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(params),
-  });
+      },
+      body: JSON.stringify(params),
+    });
   
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => null);
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => null);
+      throw new ClustersApiError(
+        `Failed to register community name: ${response.statusText}`,
+        response.status,
+        errorData
+      );
+    }
+    
+    const data = await response.json();
+    
+    if (typeof data.success !== 'boolean') {
+      throw new ClustersApiError(
+        'Invalid response: missing success field',
+        response.status,
+        data
+      );
+    }
+    
+    return data;
+  } catch (error) {
+    if (error instanceof ClustersApiError) throw error;
+    
     throw new ClustersApiError(
-      `Failed to register community name: ${response.statusText}`,
-      response.status,
-      errorData
+      `Network error when registering community name: ${error instanceof Error ? error.message : String(error)}`
     );
   }
-  
-  const data = await response.json();
-  
-  if (typeof data.success !== 'boolean') {
-    throw new ClustersApiError(
-      'Invalid response: missing success field',
-      response.status,
-      data
-    );
-  }
-  
-  return data;
-} catch (error) {
-  if (error instanceof ClustersApiError) throw error;
-  
-  throw new ClustersApiError(
-    `Network error when registering community name: ${error instanceof Error ? error.message : String(error)}`
-  );
-}
 }
