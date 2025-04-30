@@ -1,101 +1,102 @@
-# Cypherpunks Community Cluster - Claim Name
+# Cypherpunks Clusters Community - Register Name
 
-A Next.js application that demonstrates a custom build of a Community Cluster claim flow on Ethereum Sepolia.
+A Next.js application that demonstrates a sample implementation of the Cluster community registration flow on Sepolia.
 
 Demo App URL: https://claim-community-cluster-demo.vercel.app/
 
 Clusters API v1 Documentation URL: https://docs.clusters.xyz/getting-started/api
 
-## User Flow to Claim Community Name
+## User Flow to Register Community Name
 
 1. **Connection**
    - Users connect their EVM wallet of choice (MetaMask, WalletConnect, Coinbase Wallet or Rabby Wallet) 
 
 2. **After Connection**
-   - After successful wallet connection, wagmi's `useAccount` hook accesses `address` to get wallet address
-   - Request made to [Cluster API v1 `Get name`](https://docs.clusters.xyz/getting-started/api/v1/address-cluster-name#get-name) endpoint to check and fetch the Cluster Name of the connected wallet, if any
+   - On successful wallet connection, wagmi's `useAccount` hook accesses `address` to get wallet address
+   - Request made to [Cluster API v1 `Get names`](https://docs.clusters.xyz/getting-started/api/v1/address-cluster-name#get-names) endpoint to fetch names and check if wallet has already registered a community name.
 
-3. **Claim Community Name**
+3. **Register Community Name**
    - Enter a name in the modal input to check if name is available
    - Request made to [Cluster API v1 `Communities - Check availability`](https://docs.clusters.xyz/getting-started/api/v1/registration/communities#check-availability) endpoint to check if the name is available
-   - If available, submit name and server request handles registration of Community Name via [Cluster API v1 `Register a community name`](https://docs.clusters.xyz/getting-started/api/v1/registration/communities#register-a-community-name)
+   - If available, submit name and server request handles registration of Community Name via [Cluster API v1 `Communities - Register a community name`](https://docs.clusters.xyz/getting-started/api/v1/registration/communities#register-a-community-name)
 
-4. **Post Community Name Claim**
-   - If already a Community member, or successfully claimed a name, user can view their Community Cluster by clicking on their name in top left corner
+4. **After Community Name Registration**
+   - After successful claim (or if return to app as a community member), user can view their Community Cluster by clicking on their name in top left corner
    - The Community of Cluster Names can be viewed by clicking on the cute, fuzzy, cowboy character
 
 ## API Integration
 
 ### Pre-req
 
-1. **Register a Community Cluster**
-    - Register via Clusters hosted GUI on [Sepolia](https://testnet.clusters.xyz/register) or [Mainnet](https://clusters.xyz/register)
-    - Register via [API v1](https://docs.clusters.xyz/getting-started/api/v1/registration)
+1. **Register a Cluster**
+    - Register a Cluster through our GUI on [Sepolia](https://testnet.clusters.xyz/register) or [Mainnet](https://clusters.xyz/register), or via [API v1](https://docs.clusters.xyz/getting-started/api/v1/registration)
 
-2. **Get Authentication Key with Verified Wallet**
-    - Only the verified wallet of the Community Cluster (usually the wallet who registered it) can register new names
-    - Get authentication key to use when registering wallets in your custom name claim flow
-    - [Authentication API spec](https://docs.clusters.xyz/getting-started/api/v1/authentication)
-    - Use `useAuthKey` hook to get `authKey` of connected wallet
+2. **Enable Communities Feature**
+    - Enabling the communities feature on your Clusters requires manual activation. Please contact us to have it enabled for you.
+
+3. **Get Authentication Key**    
+    - The owner's Authentication Key is required to register a community name on behalf of a user's wallet address (usually the wallet who registered it).
 
 ### Clusters API Endpoints Used
 
-1. **Get Signing Message**
-- [Get Signing Message API spec](https://docs.clusters.xyz/getting-started/api/v1/authentication)
-- Get signing message and corresponding date to authenticate wallet
+1. [**Get Signing Message**](https://docs.clusters.xyz/getting-started/api/v1/authentication)
+- `GET /v1/auth/message`
+- Returns a `message` and a `signingDate`
+- Sign the message with the owner's wallet
 ```bash
-curl -X GET https://api.clusters.xyz/v1/auth/message
+curl -X GET 'https://api.clusters.xyz/v1/auth/message'
 ```
 
-2. **Get Authentication Key**
-- [Get Authentication Key API spec](https://docs.clusters.xyz/getting-started/api/v1/authentication)
-- Authenticate the ownership of a specific wallet by signing the message provided by the endpoint above.
+2. [**Get Authentication Key**](https://docs.clusters.xyz/getting-started/api/v1/authentication)
+- `POST /v1/auth/token`
+- Send in body, the `signature`, `signingDate`, `wallet` as owner's wallet address, and `type` as "evm"
+- Save this token, you will need it every time to register a name on behalf of a user
 ```bash
-curl -X POST https://api.clusters.xyz/v1/auth/token
-  -H 'Content-Type: application/json' 
-  -H 'X-API-Key: `${process.env.NEXT_PUBLIC_CLUSTERS_API_KEY}`' \
-  -d '{
-    'signature': 'string' # hash of signed message
-    'signingDate': 'string' # corresponding date from endpoint above
-    'type': 'evm'
-    'wallet': 'string' # wallet that signed the message
+curl --request POST \
+  --url 'https://api.clusters.xyz/v1/auth/token' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "signature": "0x68b3eaa1fd6...",
+    "signingDate": "2024-05-14T19:08:27.985Z",
+    "type": "evm",
+    "wallet": "0x0000000000000000000000000000000000000000"
   }'
 ```
 
-3. **Fetch Community Name of Connected Wallet**
-- [Get Name API spec](https://docs.clusters.xyz/getting-started/api/v1/address-cluster-name#get-name)
+3. [**Get Names of Connected Wallet**](https://docs.clusters.xyz/getting-started/api/v1/address-cluster-name#get-names)
+- `GET v1/names/owner/address/:address`
+- Check if a wallet address is part of your Clusters community
+- Returns all Clusters and community names registered to a single wallet address
 ```bash
 # testnet=true query param for Sepolia
 
-curl -X GET https://api.clusters.xyz/v1/names/address/:walletAddress?testnet=true
+curl -X GET 'https://api.clusters.xyz/v1/names/community/cypherpunks/find/address/0x5755d1dcea21caa687339c305d143e6e78f96adf
 ```
 
-4. **Check Availability of Community Name**
-- [Check Community Names Availability API spec](https://docs.clusters.xyz/getting-started/api/v1/registration/communities#check-availability)
+4. [**Check Community Name Availability**](https://docs.clusters.xyz/getting-started/api/v1/registration/communities#check-availability)
+- `GET /v1/names/community/:clusterName/check/:name`
+- Check the availability of a community name before calling the register endpoint.
 ```bash
 # testnet=true query param for Sepolia
 
-curl -X GET https://api.clusters.xyz/v1/names/community/:communityName/check/:nameToClaim?testnet=true
+curl -X GET 'https://api.clusters.xyz/v1/names/community/cypherpunks/check/desiredName'
 ```
 
-5. **Claim Community Name**
-- [Register Community Name API spec](https://docs.clusters.xyz/getting-started/api/v1/registration/communities#register-a-community-name)
-- Set and use the authentication key generated by the verified wallet (owner of the Community Cluster) from pre-req #2 (through endpoints #1 and #2), and store it in the server-side environment variable `COMMUNITY_CLUSTER_AUTH_KEY`.
+5. [**Register a Community Name**](https://docs.clusters.xyz/getting-started/api/v1/registration/communities#register-a-community-name)
+- `POST /v1/names/community/:clusterName/register`
+- This call should only be made from your server because the header includes the `AUTHKEY`, which you generated by authenticating the owner's wallet.
+- The body of the call includes the user's desired community name and their associated wallet address.
 
 ```bash
 # testnet=true query param for Sepolia
 
-# API route: /api/cluster/register_community_name/route.ts
-# This curl example simulates the call made by the server-side function `src/lib/server/clusters.ts`
-# Note: The Authentication Key should be handled securely on the server-side.
-
-curl -X POST https://api.clusters.xyz/v1/names/community/:communityName/register?testnet=true \
-  -H 'Content-Type: application/json' \
-  -H 'X-API-Key: ${process.env.CLUSTERS_API_KEY}' \
-  -H 'Authorization: Bearer ${process.env.COMMUNITY_CLUSTER_AUTH_KEY}' \
-  -d '{
-    "name": "string",
-    "walletAddress": "string"
+curl --request POST \
+  --url https://api.clusters.xyz/v1/names/community/cypherpunks/register \
+  --header 'Authorization: Bearer AUTHKEY'
+  --header 'Content-Type: application/json' \
+  --data '{ 
+    "name": "desiredName",
+    "walletAddress": "0x0000000000000000000000000000000000000000"
   }'
 ```
 
@@ -105,7 +106,7 @@ This project uses a robust environment variable management system that ensures p
 
 ### Required Environment Variables
 
-Create a `.env.local` file in the root directory with the following variables:
+The `.env.local` file in the root directory has the following variables:
 
 ```bash
 # Required public environment variables for client-side (prefixed with NEXT_PUBLIC_)
@@ -122,21 +123,6 @@ NEXT_PUBLIC_SEPOLIA_RPC_URL=
 # Used to authenticate name registration calls for your specific community cluster
 COMMUNITY_CLUSTER_AUTH_KEY=
 ```
-
-### Environment Variable Management
-
-The project includes a comprehensive environment variable validation system that:
-
-1. **Validates Required Variables**: Ensures all required environment variables are present
-2. **Provides Type Safety**: TypeScript definitions for all environment variables
-3. **Centralizes Configuration**: Uses a Config Context for component access to values
-4. **Shows Helpful Errors**: Displays clear error UI when required variables are missing
-5. **Handles Graceful Fallbacks**: Uses error boundaries to prevent the app from crashing
-
-For developers: If you need to add new environment variables, update the following files:
-- `src/lib/env.ts` - Add your variable to the envConfig object
-- `src/types/env.d.ts` - Add TypeScript type definition
-- `src/contexts/ConfigContext.tsx` - Expose the variable through the context if needed
 
 ## Getting Started
 
@@ -157,9 +143,9 @@ npm run dev
 
 ## Tech Stack
 
-- React v18
-- React DOM v18
-- Next.js v15.3.0 (Note: v14 is the stable version typically used with React 18)
+- React v18.3.1
+- React DOM v18.3.1
+- Next.js v15.3.0
 - Tailwind CSS v4
 - TypeScript v5
 - @tanstack/react-query v5.74.3
@@ -183,23 +169,21 @@ src/
 │               └── route.ts
 ├── components/
 │   ├── BackgroundLayout.tsx
-│   ├── ClientErrorBoundary.tsx
 │   ├── ClaimModal.tsx
-│   ├── ClaimModalInput.tsx
 │   ├── ClaimModalButton.tsx
+│   ├── ClaimModalInput.tsx
+│   ├── Footer.tsx
 │   ├── Header.tsx
-│   ├── WalletInfo.tsx
 │   ├── WalletConnectorList.tsx
-│   └── Footer.tsx
-├── contexts/
-│   └── ConfigContext.tsx
+│   └── WalletInfo.tsx
+├── config/
+│   └── site.ts
 ├── hooks/
-│   ├── useDebounce.ts
-│   ├── useAuthKey.ts
 │   ├── useAddressCopy.ts
-│   ├── useClusterNameQuery.ts
-│   ├── useClusterNameAvailability.ts
-│   └── useClusterNameClaim.ts
+│   ├── useAuthKey.ts
+│   ├── useCommunityNameAvailability.ts
+│   ├── useCommunityNameClaim.ts
+│   └── useCommunityNameQuery.ts
 ├── lib/
 │   ├── api/
 │   │   ├── clusters.ts
