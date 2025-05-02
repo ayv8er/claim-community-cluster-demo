@@ -13,7 +13,7 @@ Clusters API v1 Documentation URL: https://docs.clusters.xyz/getting-started/api
 
 2. **After Connection**
    - On successful wallet connection, wagmi's `useAccount` hook accesses `address` to get wallet address
-   - Request made to [Cluster API v1 `Get names`](https://docs.clusters.xyz/getting-started/api/v1/address-cluster-name#get-names) endpoint to fetch names and check if wallet has already registered a community name.
+   - Request made to [Cluster API v1 `Get Names by Owner`](https://docs.clusters.xyz/getting-started/api/v1/address-cluster-name#get-names-by-owner) endpoint to fetch names and check if wallet has already registered a community name.
 
 3. **Register Community Name**
    - Enter a name in the modal input to check if name is available
@@ -63,7 +63,7 @@ curl --request POST \
   }'
 ```
 
-3. [**Get Names of Connected Wallet**](https://docs.clusters.xyz/getting-started/api/v1/address-cluster-name#get-names)
+3. [**Get Names by Owner**](https://docs.clusters.xyz/getting-started/api/v1/address-cluster-name#get-names-by-owner)
 - `GET v1/names/owner/address/:address`
 - Check if a wallet address is part of your Clusters community
 - Returns all Clusters and community names registered to a single wallet address
